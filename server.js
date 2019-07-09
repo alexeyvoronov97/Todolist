@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 var users = require('./routes/user/user');
 
-app.use('', users);
+app.use('/user', users);
 
 
 //require('./routes/html-routes')(app);

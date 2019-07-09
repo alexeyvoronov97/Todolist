@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const db = {}
+const model = {};
 const sequelize = new Sequelize('todolist', 'test', 'test', {
 	host: '192.168.64.2',
 	dialect: 'mysql',
@@ -21,7 +21,7 @@ sequelize.authenticate().then(() => {
 //	sequelize.close();
 });
 
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+model.sequelize = sequelize;
+model.Sequelize = Sequelize;
 
-module.exports = db;
+module.exports = model;

@@ -33,30 +33,64 @@ router.post('/login', (request, response) => {
 		})
 		.then(user => {
 			if(user) {
-				const userData = user.get({ plain: true });
+				//const userData = user.get({ plain: true });
 
-				if(bcrypt.compareSync(password, userData.password)) {
-					let token = jwt.sign(userData, process.env.SECRET_KEY, {
+
+				if(bcrypt.compareSync(password, user.password)) {
+					let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
 						expiresIn: 1440
 					})
+					console.log('Login succeed!');
 					response.send(token);
 				}
 			} else {
+				console.log(`User is NULL!`);
 				response.status(400).json({error: 'User does not exist'});
 			}
 		})
 		.catch(err => {
-			console.log('Log in : User find error =', err);
+			console.log('Log in : Finding user error ', err);
 			response.status(404).json({error: err});
 		});
 		
 	} else {
+		console.log('Enter correct emain and password!');
 		response.status(400).json({error: 'Please enter Email and Password!'});
 	}
 });
 
 router.post('/register', (req, res) => {
-	
+	const userData = {
+		firstName: req.body.firstName,
+		lastName: req.body.lastName,
+		email: req.body.email,
+		password: req.body.password
+	}
+
+	users.findOne({
+		where: {
+			email: req.body.email
+		}
+	})
+	.then(user => {
+		if(!user) {
+			bcrypt.hash(req.body.password, 10, (err, hash) => {
+				userData.password = hash;
+				users.create(userData).
+				then(user => {
+					console.log(userData, ' registered!');
+				})
+				.catch( err => {
+					console.log('Registration Error!:', err);
+				});
+			})
+		} else {
+			console.log('User already exists!');
+		}
+	})
+	.catch(err => {
+		console.log('Finding error:',err);
+	});
 });
 
 router.get('/home', (request, response) => {
