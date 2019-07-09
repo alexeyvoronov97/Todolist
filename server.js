@@ -1,7 +1,7 @@
 const express = require('express');
-var session = require('express-session');
-var bodyParser = require('body-parser');
-var connection = require('./connect');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+
 var app = express();
 
 app.use(session({
@@ -13,7 +13,9 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
 
-app = require('./login');
+var users = require('./routes/user/user');
+
+app.use('', users);
 
 
 //require('./routes/html-routes')(app);
