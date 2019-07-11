@@ -66,6 +66,7 @@ router.post('/register', (req, res) => {
 				models.users.create(userData).
 				then(user => {
 					console.log(userData, ' registered!');
+					res.send(userData);
 				})
 				.catch( err => {
 					console.log('Registration Error!:', err);
@@ -79,7 +80,5 @@ router.post('/register', (req, res) => {
 		console.log('Finding error:',err);
 	});
 });
-
-
 
 module.exports = router;

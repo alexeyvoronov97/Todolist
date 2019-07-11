@@ -2,18 +2,20 @@ const models = require('../models');
 
 function addList(req, res) {
     
-    var listName = req.body.listName;
-    
     
     models.lists.findOrCreate({
         where: {
-            name: listName
+            name: req.body.listName
         }, 
         defaults: {
-            name : listName
+            userId: req.user.id,
+            name : req.body.listName
         }
-    }).then( (match, created) => {
-        console.log(created);
+    }).then( ([listData, created]) => {
+        console.log(listData.get( {
+            plain: true
+        }));
+        res.send(listData);
     });
 
 };

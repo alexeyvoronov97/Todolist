@@ -26,14 +26,17 @@ var task = require('./routes/task');
 app.use('/', routes);
 app.use('/user', user);
 app.use('/list', list);
-// app.use('/task', tasks);
+app.use('/task', task);
 
 
 //require('./routes/html-routes')(app);
 //to => require('./routes/html-routes')(app, connection);
 
-
 models.sequelize.sync().then(() => {
+
+	models.users.sync();
+	models.lists.sync();
+	models.tasks.sync();
 
 	console.log('Sequelize Sync Succeed');
 

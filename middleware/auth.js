@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const moment = require('moment');
 var secret = process.env.SECRET_KEY;
 
-exports.ensureAuth = function(req, res, next) {
+module.exports = function(req, res, next) {
     var auth = req.headers.authorization;
 
     if(!auth) {

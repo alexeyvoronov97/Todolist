@@ -22,9 +22,9 @@ sequelize.authenticate().then(() => {
 	db.tasks = sequelize.import('./tasks');
 
 
-	// db.users.associate(db);
-	// db.lists.associate(db);
-	// db.tasks.associate(db);
+	db.users.associate(db);
+	db.lists.associate(db);
+	db.tasks.associate(db);
 }).catch(err => {
 	console.log('Unable to connect to the database:',err);
 });
