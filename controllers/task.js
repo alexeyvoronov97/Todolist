@@ -5,33 +5,20 @@ const models = require('../models');
 
 
 function addTask(req, res) {
-    
-    models.lists.findOne( {
+
+    models.tasks.findOrCreate({
         where: {
-            id: req.body.listId
+            listId: req.params.listId, 
+            name: req.body.taskName
+        }, 
+        defaults: {
+            listId: req.params.listId,
+            name: req.body.taskName, 
+            isDone: false, 
+            isStarred: false
         }
-    }).then(list => {
-        if(!list) {
-            res.send('listId is not valid');
-        }
-        else {
-            models.tasks.findOrCreate({
-                where: {
-                    name: req.body.taskName
-                }, 
-                defaults: {
-                    listId: req.body.listId,
-                    name: req.body.taskName, 
-                    isDone: false, 
-                    isStarred: false
-                }
-            }).then( ([taskData, created]) => {
-                console.log(taskData.get({
-                    plain: true
-                }));
-                res.send(taskData);
-            });
-        }
+    }).then( ([taskData, created]) => {
+        res.send(taskData);
     });
 };
 
@@ -77,7 +64,7 @@ function moveTaskToOtherList(req, res) {
 function setOrRemoveStarred(req, res) {
     models.tasks.findOne( {
         where: {
-            id: req.body.id
+            id: req.body.taskId
         }
     }).then( taskData => {
         var status;
@@ -91,7 +78,7 @@ function setOrRemoveStarred(req, res) {
         models.tasks.update( {
             isStarred: status }, {
             where: {
-                id: req.body.id
+                id: req.body.taskId
             }
         }).then( rowsUpdated => {
             res.send(rowsUpdated);
@@ -113,7 +100,7 @@ function changeComment(req, res) {
     models.tasks.update( {
         comment: req.body.comment }, {
         where: {
-            id: req.body.id 
+            id: req.body.taskId 
         }
     } ).then( rowsUpdated => {
         res.send(rowsUpdated);
@@ -124,7 +111,7 @@ function setDueDate(req, res) {
     models.tasks.update( {
         dueAt: req.body.dueDate }, {
         where: {
-            id: req.body.id
+            id: req.body.taskId
         }
     }).then( rowsUpdated => {
         res.send(rowsUpdated);
@@ -162,6 +149,16 @@ function getWeekTasks(req, res) {
     });
 }
 
+function getAllTasksFromListId(req, res) {
+    models.tasks.findAll( {
+        where: {
+            listId: req.params.listId
+        }
+    }).then( taskArray => {
+        res.send(taskArray);
+    });
+}
+
 module.exports = {
     addTask, 
     removeTask, 
@@ -171,5 +168,6 @@ module.exports = {
     changeComment, 
     setDueDate, 
     getTodayTasks,
-    getWeekTasks
+    getWeekTasks, 
+    getAllTasksFromListId
 };

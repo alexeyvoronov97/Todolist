@@ -10,7 +10,6 @@ module.exports = function(req, res, next) {
     }
 
     var token = auth.split(' ')[1];
-    console.log(token);
 
     jwt.verify(token, secret, (err, decoded) => {
         if(err) {

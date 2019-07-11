@@ -24,7 +24,7 @@ function removeList(req, res) {
 
     models.lists.findOne( {
         where: {
-            id: req.body.listId
+            id: req.params.listId
         }
     }).then(listData => {
         if(!listData) {
@@ -41,7 +41,7 @@ function editList(req, res) {
     models.lists.update( { 
         name: req.body.name },  { 
         where: {
-            id: req.body.listId }
+            id: req.params.listId }
         }
     ).then( rowsUpdated => {
         res.send(rowsUpdated);
@@ -50,8 +50,12 @@ function editList(req, res) {
     });
 }
 
-function getAllLists(req, res) {
-    models.lists.findAll().then( listArray => {
+function getAllListsFromUserId(req, res) {
+    models.lists.findAll( {
+        where: {
+            userId: req.user.id
+        }
+    }).then( listArray => {
         res.send(listArray);
     });
 }
@@ -60,5 +64,5 @@ module.exports = {
     addList, 
     removeList, 
     editList, 
-    getAllLists
+    getAllListsFromUserId
 };

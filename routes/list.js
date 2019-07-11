@@ -4,10 +4,11 @@ const auth = require('../middleware/auth');
 const listController = require('../controllers/list');
 const taskController = require('../controllers/task');
 
-router.get('/', auth, listController.getAllLists);
+router.get('/', auth, listController.getAllListsFromUserId);
+router.get('/:listId', auth, taskController.getAllTasksFromListId);
 router.post('/add', auth, listController.addList);
-router.delete('/remove', auth, listController.removeList);
-router.put('/edit', auth, listController.editList);
+router.delete('/:listId/remove', auth, listController.removeList);
+router.put('/:listId/edit', auth, listController.editList);
 router.get('/starred', auth, taskController.getStarredTasks);
 router.get('/today', auth, taskController.getTodayTasks);
 router.get('/week', auth, taskController.getWeekTasks);
