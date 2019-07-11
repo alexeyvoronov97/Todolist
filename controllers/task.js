@@ -105,10 +105,22 @@ function getStarredTasks(req, res) {
     });
 }
 
+function changeComment(req, res) {
+    models.tasks.update( {
+        comment: req.body.comment }, {
+        where: {
+            id: req.body.id 
+        }
+    } ).then( rowsUpdated => {
+        res.send(rowsUpdated);
+    });
+}
+
 module.exports = {
     addTask, 
     removeTask, 
     moveTaskToOtherList, 
     setOrRemoveStarred, 
-    getStarredTasks
+    getStarredTasks, 
+    changeComment
 };
