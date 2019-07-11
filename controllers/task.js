@@ -1,4 +1,8 @@
+const moment = require('moment');
+const Sequelize = require('sequelize');
+
 const models = require('../models');
+
 
 function addTask(req, res) {
     
@@ -116,11 +120,56 @@ function changeComment(req, res) {
     });
 }
 
+function setDueDate(req, res) {
+    models.tasks.update( {
+        dueAt: req.body.dueDate }, {
+        where: {
+            id: req.body.id
+        }
+    }).then( rowsUpdated => {
+        res.send(rowsUpdated);
+    });
+}
+
+function getTodayTasks(req, res) {
+    models.tasks.findAll( {
+        where: {
+            dueAt: new Date()
+        }
+    }).then( taskArray => {
+        res.send(taskArray);
+    });
+}
+
+function getWeekTasks(req, res) {
+  
+    var startOfWeek = moment().startOf('week');
+    var endOfWeek = moment().endOf('week');
+
+    console.log(startOfWeek, endOfWeek);
+
+    const {or, and, gte, lte} = Sequelize.Op;
+
+    models.tasks.findAll( {
+        where: {
+            [and]: [
+                {dueAt: {[gte]: startOfWeek}}, 
+                {dueAt: {[lte]: endOfWeek}}
+            ]
+        }
+    }).then( taskArray => {
+        res.send(taskArray);
+    });
+}
+
 module.exports = {
     addTask, 
     removeTask, 
     moveTaskToOtherList, 
     setOrRemoveStarred, 
     getStarredTasks, 
-    changeComment
+    changeComment, 
+    setDueDate, 
+    getTodayTasks,
+    getWeekTasks
 };

@@ -8,5 +8,6 @@ router.delete('/remove', auth, taskController.removeTask);
 router.put('/move', auth, taskController.moveTaskToOtherList);
 router.put('/starred', auth, taskController.setOrRemoveStarred);
 router.put('/comment', auth, taskController.changeComment);
+router.put('/due', auth, taskController.setDueDate);
 
 module.exports = router;

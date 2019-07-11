@@ -9,5 +9,7 @@ router.post('/add', auth, listController.addList);
 router.delete('/remove', auth, listController.removeList);
 router.put('/edit', auth, listController.editList);
 router.get('/starred', auth, taskController.getStarredTasks);
+router.get('/today', auth, taskController.getTodayTasks);
+router.get('/week', auth, taskController.getWeekTasks);
 
 module.exports = router;

@@ -21,10 +21,14 @@ module.exports = (sequelize, DataTypes) => {
         comment: {
             type: DataTypes.STRING, 
             allowNull: true
+        }, 
+        dueAt: {
+            type: DataTypes.DATEONLY, 
+            defaultValue: DataTypes.NOW
         }
     },
     {
-        timestamps: false
+        timestamps: true
     });
 
     tasks.associate = function(models) {
