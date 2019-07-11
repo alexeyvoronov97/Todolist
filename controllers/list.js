@@ -20,11 +20,38 @@ function addList(req, res) {
 
 };
 
-// function removeList(req, res) {
-//     var listName = req.body.listName;
+function removeList(req, res) {
 
-// }
+    models.lists.findOne( {
+        where: {
+            id: req.body.listId
+        }
+    }).then(listData => {
+        if(!listData) {
+            console.log('List does not exist!');
+        } else {
+            listData.destroy();
+            res.send('Delected');
+        }
+    })
+}
+
+function editList(req, res) {
+
+    models.lists.update( { 
+        name: req.body.name },  { 
+        where: {
+            id: req.body.listId }
+        }
+    ).then( rowsUpdated => {
+        res.send(rowsUpdated);
+    }).catch( err => {
+        res.send(err);
+    });
+}
 
 module.exports = {
-    addList
+    addList, 
+    removeList, 
+    editList
 };

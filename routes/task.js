@@ -4,5 +4,7 @@ const auth = require('../middleware/auth');
 const taskController = require('../controllers/task');
 
 router.post('/add', auth, taskController.addTask);
+router.delete('/remove', auth, taskController.removeTask);
+router.put('/move', auth, taskController.moveTaskToOtherList);
 
 module.exports = router;

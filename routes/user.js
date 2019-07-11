@@ -25,7 +25,7 @@ router.post('/login', (req, res) => {
 
 				if(bcrypt.compareSync(password, user.password)) {
 					let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
-						expiresIn: 10000	//100s
+						expiresIn: '1d'	//1 day
 					});
 					console.log('Login succeed!');
 					res.send(token);
