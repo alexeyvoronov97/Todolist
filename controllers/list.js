@@ -50,8 +50,15 @@ function editList(req, res) {
     });
 }
 
+function getAllLists(req, res) {
+    models.lists.findAll().then( listArray => {
+        res.send(listArray);
+    });
+}
+
 module.exports = {
     addList, 
     removeList, 
-    editList
+    editList, 
+    getAllLists
 };

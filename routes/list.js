@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const controller = require('../controllers/list');
+const listController = require('../controllers/list');
+const taskController = require('../controllers/task');
 
-router.post('/add', auth, controller.addList);
-router.delete('/remove', auth, controller.removeList);
-router.put('/edit', auth, controller.editList);
+router.get('/', auth, listController.getAllLists);
+router.post('/add', auth, listController.addList);
+router.delete('/remove', auth, listController.removeList);
+router.put('/edit', auth, listController.editList);
+router.get('/starred', auth, taskController.getStarredTasks);
 
 module.exports = router;

@@ -95,9 +95,20 @@ function setOrRemoveStarred(req, res) {
     })
 }
 
+function getStarredTasks(req, res) {
+    models.tasks.findAll( {
+        where: {
+            isStarred: true
+        }
+    }).then( starredData => {
+        res.send(starredData);
+    });
+}
+
 module.exports = {
     addTask, 
     removeTask, 
     moveTaskToOtherList, 
-    setOrRemoveStarred
+    setOrRemoveStarred, 
+    getStarredTasks
 };
