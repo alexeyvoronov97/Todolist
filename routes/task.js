@@ -6,5 +6,6 @@ const taskController = require('../controllers/task');
 router.post('/add', auth, taskController.addTask);
 router.delete('/remove', auth, taskController.removeTask);
 router.put('/move', auth, taskController.moveTaskToOtherList);
+router.put('/starred', auth, taskController.setOrRemoveStarred);
 
 module.exports = router;

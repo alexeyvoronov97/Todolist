@@ -10,6 +10,12 @@ module.exports = (sequelize, DataTypes) => {
         }, 
         isDone: {
             type: DataTypes.BOOLEAN, 
+            defaultValue: false, 
+            allowNull: false
+        }, 
+        isStarred: {
+            type: DataTypes.BOOLEAN, 
+            defaultValue: false, 
             allowNull: false
         }
     },

@@ -18,7 +18,8 @@ function addTask(req, res) {
                 defaults: {
                     listId: req.body.listId,
                     name: req.body.taskName, 
-                    isDone: false
+                    isDone: false, 
+                    isStarred: false
                 }
             }).then( ([taskData, created]) => {
                 console.log(taskData.get({
@@ -41,7 +42,7 @@ function removeTask(req, res) {
             console.log('Task does not exist!');
         } else {
             taskData.destroy();
-            res.send('Delected');
+            res.send('Deleted');
         }
     })
 }
@@ -63,16 +64,40 @@ function moveTaskToOtherList(req, res) {
                 }
             ).then( rowsUpdated => {
                 res.send(rowsUpdated);
-            }).catch( err => {
-                res.send(err);
             });
         }
     })
     
 }
 
+function setOrRemoveStarred(req, res) {
+    models.tasks.findOne( {
+        where: {
+            id: req.body.id
+        }
+    }).then( taskData => {
+        var status;
+
+        if(taskData.dataValues.isStarred == true) {
+            status = false;
+        } else {
+            status = true;
+        }
+
+        models.tasks.update( {
+            isStarred: status }, {
+            where: {
+                id: req.body.id
+            }
+        }).then( rowsUpdated => {
+            res.send(rowsUpdated);
+        });
+    })
+}
+
 module.exports = {
     addTask, 
     removeTask, 
-    moveTaskToOtherList
+    moveTaskToOtherList, 
+    setOrRemoveStarred
 };
