@@ -1,26 +1,19 @@
+const uid = require('get-uid');
 const models = require('../models');
 
-function addList(req, res) {
+function createList(req, res) {
     
-    
-    models.lists.findOrCreate({
-        where: {
-            name: req.body.listName
-        }, 
-        defaults: {
-            userId: req.user.id,
-            name : req.body.listName
-        }
-    }).then( ([listData, created]) => {
-        console.log(listData.get( {
-            plain: true
-        }));
+    models.lists.create( {
+        id: uid(), 
+        userId: req.user.id,
+        name : req.body.listName
+    }).then( listData => {
         res.send(listData);
     });
 
 };
 
-function removeList(req, res) {
+function deleteList(req, res) {
 
     models.lists.findOne( {
         where: {
@@ -28,29 +21,27 @@ function removeList(req, res) {
         }
     }).then(listData => {
         if(!listData) {
-            console.log('List does not exist!');
+            res.send('List does not exist!');
         } else {
             listData.destroy();
-            res.send('Delected');
+            res.send('Deleted');
         }
     })
 }
 
-function editList(req, res) {
+function updateList(req, res) {
 
     models.lists.update( { 
-        name: req.body.name },  { 
+        name: req.body.listName },  { 
         where: {
             id: req.params.listId }
         }
     ).then( rowsUpdated => {
         res.send(rowsUpdated);
-    }).catch( err => {
-        res.send(err);
     });
 }
 
-function getAllListsFromUserId(req, res) {
+function getLists(req, res) {
     models.lists.findAll( {
         where: {
             userId: req.user.id
@@ -61,8 +52,8 @@ function getAllListsFromUserId(req, res) {
 }
 
 module.exports = {
-    addList, 
-    removeList, 
-    editList, 
-    getAllListsFromUserId
+    createList, 
+    deleteList, 
+    updateList, 
+    getLists
 };

@@ -3,11 +3,9 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const taskController = require('../controllers/task');
 
-router.post('/:listId/add', auth, taskController.addTask);
-router.delete('/:listId/remove', auth, taskController.removeTask);
-router.put('/:listId/move', auth, taskController.moveTaskToOtherList);
-router.put('/:listId/starred', auth, taskController.setOrRemoveStarred);
-router.put('/:listId/comment', auth, taskController.changeComment);
-router.put('/:listId/due', auth, taskController.setDueDate);
+router.post('/new', auth, taskController.createTask);
+router.delete('/:taskId', auth, taskController.deleteTask);
+router.put('/:taskId', auth, taskController.updateTask);
+router.put('/:taskId/move', auth, taskController.moveToOtherList);
 
 module.exports = router;

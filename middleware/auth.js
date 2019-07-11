@@ -6,15 +6,14 @@ module.exports = function(req, res, next) {
     var auth = req.headers.authorization;
 
     if(!auth) {
-        return res.status(403).send(err);
+        return res.send('No authorization');
     }
 
     var token = auth.split(' ')[1];
 
     jwt.verify(token, secret, (err, decoded) => {
         if(err) {
-            console.log('Token verify error!', err);
-            return res.status(404).send(err);
+            return res.send(err);
         }
 
         req.user = decoded;

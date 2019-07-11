@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const uid = require('get-uid');
 const models = require('../models');
 
 function login(req, res) {
@@ -27,22 +28,23 @@ function login(req, res) {
 				}
 			} else {
 				console.log(`User is NULL!`);
-				res.status(400).json({error: 'User does not exist'});
+				res.send({error: 'User does not exist'});
 			}
 		})
 		.catch(err => {
 			console.log('Log in : Finding user error ', err);
-			res.status(404).json({error: err});
+			res.send(err);
 		});
 		
 	} else {
 		console.log('Enter correct email and password!');
-		res.status(400).json({error: 'Please enter Email and Password!'});
+		res.send({error: 'Please enter Email and Password!'});
 	}
 };
 
 function register(req, res) {
 	const userData = {
+        id: uid(),
 		firstName: req.body.firstName,
 		lastName: req.body.lastName,
 		email: req.body.email,
@@ -65,14 +67,17 @@ function register(req, res) {
 				})
 				.catch( err => {
 					console.log('Registration Error!:', err);
+					res.send(err);
 				});
 			})
 		} else {
 			console.log('User already exists!');
+			res.send({error: 'User already exists'});
 		}
 	})
 	.catch(err => {
 		console.log('Finding error:',err);
+		res.send(err);
 	});
 };
 

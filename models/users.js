@@ -4,6 +4,10 @@ module.exports = (sequelize, DataTypes) => {
     var users = sequelize.define(
     'user',     // 's' attaches at the end automatically 
     {
+        id: {
+            type: DataTypes.INTEGER, 
+            primaryKey: true
+        }, 
         firstName: {
             type: DataTypes.STRING, 
             allowNull: false
@@ -37,15 +41,3 @@ module.exports = (sequelize, DataTypes) => {
 
     return users;
 };
-/*
-users.sync().then(() => {
-    console.log('Get table <users> successfully or new table <users> created');
-}).catch(err => {
-    console.log('Users sync error = ', err);
-}).finally(() => {
-    //model.sequelize.close();
-});
-
-
-
-module.exports = users;*/

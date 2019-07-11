@@ -1,9 +1,14 @@
 'use strict';
 
+
 module.exports = (sequelize, DataTypes) => {
     var tasks = sequelize.define(
     'task', 
     { 
+        id: {
+            type: DataTypes.INTEGER, 
+            primaryKey: true
+        }, 
         name: {
             type: DataTypes.STRING,
             allowNull: false
@@ -41,11 +46,3 @@ module.exports = (sequelize, DataTypes) => {
 
     return tasks;
 };
-/*
-tasks.sync().then(() => {
-    console.log('Get table <tasks> successfully or new table <tasks> created');
-}).catch(err => {
-    console.log('Tasks sync error = ', err);
-}).finally(() => {
-
-});*/

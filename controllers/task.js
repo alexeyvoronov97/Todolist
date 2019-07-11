@@ -1,36 +1,31 @@
 const moment = require('moment');
 const Sequelize = require('sequelize');
-
+const uid = require('get-uid');
 const models = require('../models');
 
 
-function addTask(req, res) {
+function createTask(req, res) {
 
-    models.tasks.findOrCreate({
-        where: {
-            listId: req.params.listId, 
-            name: req.body.taskName
-        }, 
-        defaults: {
-            listId: req.params.listId,
-            name: req.body.taskName, 
-            isDone: false, 
-            isStarred: false
-        }
-    }).then( ([taskData, created]) => {
+    models.tasks.create( {
+        id: uid(), 
+        listId: req.body.listId,
+        name: req.body.taskName, 
+        isDone: false, 
+        isStarred: false
+    }).then( taskData => {
         res.send(taskData);
     });
 };
 
-function removeTask(req, res) {
+function deleteTask(req, res) {
 
     models.tasks.findOne( {
         where: {
-            id: req.body.taskId
+            id: req.params.taskId
         }
     }).then(taskData => {
         if(!taskData) {
-            console.log('Task does not exist!');
+            res.send('Task does not exist!');
         } else {
             taskData.destroy();
             res.send('Deleted');
@@ -38,7 +33,7 @@ function removeTask(req, res) {
     })
 }
 
-function moveTaskToOtherList(req, res) {
+function moveToOtherList(req, res) {
 
     models.lists.findOne( {
         where: { 
@@ -51,7 +46,7 @@ function moveTaskToOtherList(req, res) {
             models.tasks.update( { 
                 listId: listData.dataValues.id },  { 
                 where: {
-                    id: req.body.taskId }
+                    id: req.params.taskId }
                 }
             ).then( rowsUpdated => {
                 res.send(rowsUpdated);
@@ -61,29 +56,14 @@ function moveTaskToOtherList(req, res) {
     
 }
 
-function setOrRemoveStarred(req, res) {
-    models.tasks.findOne( {
+function updateTask(req, res) {
+    models.tasks.update(req.body, {
         where: {
-            id: req.body.taskId
+            id: req.params.taskId
         }
-    }).then( taskData => {
-        var status;
-
-        if(taskData.dataValues.isStarred == true) {
-            status = false;
-        } else {
-            status = true;
-        }
-
-        models.tasks.update( {
-            isStarred: status }, {
-            where: {
-                id: req.body.taskId
-            }
-        }).then( rowsUpdated => {
-            res.send(rowsUpdated);
-        });
-    })
+    }).then( rowsUpdated => {
+        res.send(rowsUpdated);
+    });
 }
 
 function getStarredTasks(req, res) {
@@ -93,28 +73,6 @@ function getStarredTasks(req, res) {
         }
     }).then( starredData => {
         res.send(starredData);
-    });
-}
-
-function changeComment(req, res) {
-    models.tasks.update( {
-        comment: req.body.comment }, {
-        where: {
-            id: req.body.taskId 
-        }
-    } ).then( rowsUpdated => {
-        res.send(rowsUpdated);
-    });
-}
-
-function setDueDate(req, res) {
-    models.tasks.update( {
-        dueAt: req.body.dueDate }, {
-        where: {
-            id: req.body.taskId
-        }
-    }).then( rowsUpdated => {
-        res.send(rowsUpdated);
     });
 }
 
@@ -149,7 +107,7 @@ function getWeekTasks(req, res) {
     });
 }
 
-function getAllTasksFromListId(req, res) {
+function getTasksOfList(req, res) {
     models.tasks.findAll( {
         where: {
             listId: req.params.listId
@@ -159,15 +117,24 @@ function getAllTasksFromListId(req, res) {
     });
 }
 
+function getDoneTasks(req, res) {
+    models.tasks.findAll( {
+        where: {
+            isDone: true
+        }
+    }).then( doneData => {
+        res.send(doneData);
+    });
+}
+
 module.exports = {
-    addTask, 
-    removeTask, 
-    moveTaskToOtherList, 
-    setOrRemoveStarred, 
+    createTask, 
+    deleteTask, 
+    moveToOtherList, 
+    updateTask, 
     getStarredTasks, 
-    changeComment, 
-    setDueDate, 
     getTodayTasks,
     getWeekTasks, 
-    getAllTasksFromListId
+    getTasksOfList, 
+    getDoneTasks
 };
