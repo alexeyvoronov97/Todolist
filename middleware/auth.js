@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
-var secret = process.env.SECRET_KEY;
+const config = require('../config/config.json');
+var secret = config.secret_key;
 
 module.exports = function(req, res, next) {
     var auth = req.headers.authorization;

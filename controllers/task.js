@@ -1,136 +1,130 @@
 const moment = require('moment');
-const Sequelize = require('sequelize');
-const uid = require('get-uid');
 const models = require('../models');
 
 
 function createTask(req, res) {
-
+    let time = moment.utc();
+    
     models.tasks.create( {
-        id: uid(), 
-        listId: req.body.listId,
+        _listId: req.body.listId,
         name: req.body.taskName, 
-        isDone: false, 
-        isStarred: false
-    }).then( taskData => {
-        res.send(taskData);
+        createdAt: time, 
+        dueDate: time
+    }, (err, taskData) => {
+        if(err) {
+            res.send(err);
+        } else {
+            res.send(taskData);
+        }
     });
 };
 
 function deleteTask(req, res) {
 
-    models.tasks.findOne( {
-        where: {
-            id: req.params.taskId
+    models.tasks.deleteOne( { _id: req.params.taskId }, 
+        err => {
+            res.send(err);
         }
-    }).then(taskData => {
-        if(!taskData) {
-            res.send('Task does not exist!');
-        } else {
-            taskData.destroy();
-            res.send('Deleted');
-        }
-    })
-}
-
-function moveToOtherList(req, res) {
-
-    models.lists.findOne( {
-        where: { 
-            name: req.body.listName
-        }
-    }).then(listData => {
-        if(!listData) {
-            res.send('List does not exist');
-        } else {
-            models.tasks.update( { 
-                listId: listData.dataValues.id },  { 
-                where: {
-                    id: req.params.taskId }
-                }
-            ).then( rowsUpdated => {
-                res.send(rowsUpdated);
-            });
-        }
-    })
-    
+    );
 }
 
 function updateTask(req, res) {
-    models.tasks.update(req.body, {
-        where: {
-            id: req.params.taskId
+    models.tasks.updateOne( { _id: req.params.taskId }, req.body, 
+        (err, result) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(result);
+            }
         }
-    }).then( rowsUpdated => {
-        res.send(rowsUpdated);
-    });
+    );
 }
 
 function getStarredTasks(req, res) {
-    models.tasks.findAll( {
-        where: {
-            isStarred: true
+    models.tasks.find( { isStarred: true }, 
+        (err, starredData) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(starredData);
+            }
         }
-    }).then( starredData => {
-        res.send(starredData);
-    });
+    );
 }
 
 function getTodayTasks(req, res) {
-    models.tasks.findAll( {
-        where: {
-            dueAt: new Date()
+    
+    let today = moment.utc().startOf('day');
+    let tomorrow = moment(today).add(1, 'days');
+    
+    var query = {
+        dueDate: {
+            $gte: today,
+            $lt: tomorrow
         }
-    }).then( taskArray => {
-        res.send(taskArray);
-    });
+    };
+
+    models.tasks.find( query, 
+        (err, todayData) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(todayData);
+            }
+        }
+    );
 }
 
 function getWeekTasks(req, res) {
   
-    var startOfWeek = moment().startOf('week');
-    var endOfWeek = moment().endOf('week');
+    var startOfWeek = moment.utc().startOf('week');
+    var endOfWeek = moment.utc().endOf('week');
 
-    console.log(startOfWeek, endOfWeek);
-
-    const {or, and, gte, lte} = Sequelize.Op;
-
-    models.tasks.findAll( {
-        where: {
-            [and]: [
-                {dueAt: {[gte]: startOfWeek}}, 
-                {dueAt: {[lte]: endOfWeek}}
-            ]
+    var query = {
+        dueDate: {
+            $gte: startOfWeek,
+            $lte: endOfWeek
         }
-    }).then( taskArray => {
-        res.send(taskArray);
-    });
+    };
+
+    models.tasks.find( query, 
+        (err, todayData) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(todayData);
+            }
+        }
+    );
 }
 
 function getTasksOfList(req, res) {
-    models.tasks.findAll( {
-        where: {
-            listId: req.params.listId
+    models.tasks.find( { _listId: req.params.listId }, 
+        (err, taskArray) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(taskArray);
+            }
         }
-    }).then( taskArray => {
-        res.send(taskArray);
-    });
+    );
 }
 
 function getDoneTasks(req, res) {
-    models.tasks.findAll( {
-        where: {
-            isDone: true
+    models.tasks.find( { isDone: true }, 
+        (err, doneData) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(doneData);
+            }
         }
-    }).then( doneData => {
-        res.send(doneData);
-    });
+    );
 }
 
 module.exports = {
     createTask, 
     deleteTask, 
-    moveToOtherList, 
     updateTask, 
     getStarredTasks, 
     getTodayTasks,

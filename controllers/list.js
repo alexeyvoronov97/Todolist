@@ -1,53 +1,63 @@
-const uid = require('get-uid');
 const models = require('../models');
 
 function createList(req, res) {
     
     models.lists.create( {
-        id: uid(), 
-        userId: req.user.id,
-        name : req.body.listName
-    }).then( listData => {
-        res.send(listData);
-    });
+        _userId: req.user._id,
+        name : req.body.listName }, 
+        (err, listData) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(listData);
+            }
+        }
+    );
 
 };
 
 function deleteList(req, res) {
 
-    models.lists.findOne( {
-        where: {
-            id: req.params.listId
+    let errArray = {};
+
+    models.lists.deleteOne( {
+        _id: req.params.listId }, 
+        err => {
+            errArray[0] = err;
+            //res.send(err);
         }
-    }).then(listData => {
-        if(!listData) {
-            res.send('List does not exist!');
-        } else {
-            listData.destroy();
-            res.send('Deleted');
+    );
+
+    models.tasks.deleteMany( {
+        _listId: req.params.listId }, 
+        err => {
+            errArray[1] = err;
+            res.send(errArray);
         }
-    })
+    );
 }
 
 function updateList(req, res) {
 
-    models.lists.update( { 
-        name: req.body.listName },  { 
-        where: {
-            id: req.params.listId }
+    models.lists.updateOne( { _id: req.params.listId }, { name: req.body.listName },  
+        (err, result) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(result);
+            }
         }
-    ).then( rowsUpdated => {
-        res.send(rowsUpdated);
-    });
+    );
 }
 
 function getLists(req, res) {
-    models.lists.findAll( {
-        where: {
-            userId: req.user.id
-        }
-    }).then( listArray => {
-        res.send(listArray);
+    models.lists.find( { userId: req.user._id }, 
+        (err, listArray) => {
+            if(err) {
+                res.send(err);
+            } else {
+                res.send(listArray);
+            }
     });
 }
 

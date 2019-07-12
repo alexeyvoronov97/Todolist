@@ -3,8 +3,6 @@ const router = express.Router();
 const path = require('path');
 const session = require('express-session');
 
-process.env.SECRET_KEY = 'secret';
-
 router.get('/', (req, res) => {
 	res.sendFile(path.join(__dirname + '/login.html'));
 });
