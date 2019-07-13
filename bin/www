@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
 
-mongoose.connect('mongodb://localhost/' + config.database, (err) => {
+mongoose.connect('mongodb+srv://user:user@cluster0-bwjdi.mongodb.net/test?retryWrites=true&w=majority', (err) => {
 	if(err) {
 		console.error('Error connecting to db: ', err);
 	} else {
