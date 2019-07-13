@@ -17,7 +17,15 @@ function login(req, res) {
 					let token = jwt.sign(userData.toJSON(), config.secret_key, {
 						expiresIn: '1d'	//1 day
 					});
-					res.send(token);
+					
+					let sendData = {
+						_id: userData._id, 
+						firstName: userData.firstName, 
+						lastName: userData.lastName,
+						email: userData.email,
+						token: token
+					};
+					res.send(sendData);
 				} else {
 					res.send('password is wrong');
 				}

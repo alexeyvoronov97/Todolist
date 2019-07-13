@@ -1,10 +1,10 @@
 'use strict';
 
-const mongoose = require('mongoose');
+const {ObjectID} = require('mongodb');
 
 module.exports = {
     _userId: {
-        type: mongoose.Schema.Types.ObjectId, 
+        type: ObjectID, 
         ref: 'user'
     }, 
     name: String
