@@ -45,7 +45,7 @@ function register(req, res) {
 		password: req.body.password
 	}
 	
-	bcrypt.hash(req.body.password, 10, (err, hash) => {
+	bcrypt.hash(req.body.password, 10).then(hash => {
 		if(err) {
 			res.send(err);
 		} else {
