@@ -4,7 +4,7 @@ const path = require('path');
 const session = require('express-session');
 
 router.get('/', (req, res) => {
-	res.sendFile(path.join(__dirname + '/login.html'));
+	res.send('This is a todo-list web app.');
 });
 
 router.get('/home', (req, res) => {
