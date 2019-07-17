@@ -5,12 +5,12 @@ const config = require('../config/config.json');
 
 const port = process.env.PORT || 3000;
 
-var uri = 'mongodb+srv://user:user@cluster0-bwjdi.mongodb.net/test?retryWrites=true&w=majority';
+var url = 'mongodb+srv://user:user@cluster0-bwjdi.mongodb.net/test?retryWrites=true&w=majority';
 
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useCreateIndex', true);
 
-mongoose.connect(uri, { useNewUrlParser: true }, (err) => {
+mongoose.connect(url, { useNewUrlParser: true }, (err) => {
 	if(err) {
 		console.error('Error connecting to db: ', err);
 	} else {
