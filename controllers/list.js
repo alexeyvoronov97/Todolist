@@ -7,9 +7,9 @@ function createList(req, res) {
         name : req.body.listName }, 
         (err, listData) => {
             if(err) {
-                res.send(err);
+                res.status(403).send('can not create list:', err);
             } else {
-                res.send(listData);
+                res.status(200).send(listData);
             }
         }
     );
@@ -19,11 +19,13 @@ function createList(req, res) {
 function deleteList(req, res) {
 
     let errArray = {};
+    let hasErr = false;
 
     models.lists.deleteOne( {
         _id: req.params.listId }, 
         err => {
             errArray[0] = err;
+            hasErr = true;
             //res.send(err);
         }
     );
@@ -31,8 +33,12 @@ function deleteList(req, res) {
     models.tasks.deleteMany( {
         _listId: req.params.listId }, 
         err => {
-            errArray[1] = err;
-            res.send(errArray);
+            if(hasErr) {
+                errArray[1] = err;
+            } else {
+                errArray[0] = err;
+            }
+            res.status(403).send(errArray);
         }
     );
 }
@@ -42,9 +48,9 @@ function updateList(req, res) {
     models.lists.updateOne( { _id: req.params.listId }, { name: req.body.listName },  
         (err, result) => {
             if(err) {
-                res.send(err);
+                res.status(403).send(err);
             } else {
-                res.send(result);
+                res.status(200).send(result);
             }
         }
     );
@@ -54,7 +60,7 @@ function getLists(req, res) {
     models.lists.find( { userId: req.user._id }, 
         (err, listArray) => {
             if(err) {
-                res.send(err);
+                res.status(403).send(err);
             } else {
                 res.send(listArray);
             }

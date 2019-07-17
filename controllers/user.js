@@ -11,7 +11,7 @@ function login(req, res) {
 	if(email && password) {
 		models.users.findOne({ email: email }, (err, userData) => {
 			if(err) {
-				res.send(err);
+				res.status(401).send('can not find email:', err);
 			} else {
 				if(bcrypt.compareSync(password, userData.password)) {
 					let token = jwt.sign(userData.toJSON(), config.secret_key, {
@@ -25,15 +25,15 @@ function login(req, res) {
 						email: userData.email,
 						token: token
 					};
-					res.send(sendData);
+					res.status(200).send(sendData);
 				} else {
-					res.send('password is wrong');
+					res.status(401).send('password is wrong');
 				}
 			}
 		});
 		
 	} else {
-		res.send('Please enter Email and Password!');
+		res.status(401).send('email or password is empty!');
 	}
 };
 
@@ -47,14 +47,14 @@ function register(req, res) {
 	
 	bcrypt.hash(req.body.password, 10, (err, hash) => {
 		if(err) {
-			res.send(err);
+			res.status(401).send('password can not be hashed:', err);
 		} else {
 			user.password = hash;
 			models.users.create(user, (err, userData) => {
 				if(err) {
-					res.send(err);
+					res.status(401).send('user can not be created:', err);
 				} else {
-					res.send(userData);
+					res.status(200).send(userData);
 				}
 			});
 		}

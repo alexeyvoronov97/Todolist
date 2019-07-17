@@ -12,9 +12,9 @@ function createTask(req, res) {
         dueDate: time
     }, (err, taskData) => {
         if(err) {
-            res.send(err);
+            res.status(403).send(err);
         } else {
-            res.send(taskData);
+            res.status(200).send(taskData);
         }
     });
 };
@@ -23,7 +23,7 @@ function deleteTask(req, res) {
 
     models.tasks.deleteOne( { _id: req.params.taskId }, 
         err => {
-            res.send(err);
+            res.status(403).send(err);
         }
     );
 }
@@ -32,9 +32,9 @@ function updateTask(req, res) {
     models.tasks.updateOne( { _id: req.params.taskId }, req.body, 
         (err, result) => {
             if(err) {
-                res.send(err);
+                res.status(403).send(err);
             } else {
-                res.send(result);
+                res.status(403).send(result);
             }
         }
     );
@@ -44,9 +44,9 @@ function getStarredTasks(req, res) {
     models.tasks.find( { isStarred: true }, 
         (err, starredData) => {
             if(err) {
-                res.send(err);
+                res.status(403).send(err);
             } else {
-                res.send(starredData);
+                res.status(403).send(starredData);
             }
         }
     );
