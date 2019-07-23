@@ -34,7 +34,7 @@ function updateTask(req, res) {
             if(err) {
                 res.status(403).send(err);
             } else {
-                res.status(403).send(result);
+                res.send(result);
             }
         }
     );
@@ -46,7 +46,7 @@ function getStarredTasks(req, res) {
             if(err) {
                 res.status(403).send(err);
             } else {
-                res.status(403).send(starredData);
+                res.send(starredData);
             }
         }
     );

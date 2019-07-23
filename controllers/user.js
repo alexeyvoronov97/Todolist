@@ -26,6 +26,7 @@ function login(req, res) {
 						token: token
 					};
 					res.status(200).send(sendData);
+					console.log("User logged in:\n", sendData);
 				} else {
 					res.status(401).send('password is wrong');
 				}
@@ -52,7 +53,7 @@ function register(req, res) {
 			user.password = hash;
 			models.users.create(user, (err, userData) => {
 				if(err) {
-					res.status(401).send('user can not be created:', err);
+					res.status(403).send('user can not be created:', err);
 				} else {
 					res.status(200).send(userData);
 				}

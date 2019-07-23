@@ -57,7 +57,9 @@ function updateList(req, res) {
 }
 
 function getLists(req, res) {
-    models.lists.find( { userId: req.user._id }, 
+
+    //console.log(req);
+    models.lists.find( { _userId: req.user._id }, 
         (err, listArray) => {
             if(err) {
                 res.status(403).send(err);
